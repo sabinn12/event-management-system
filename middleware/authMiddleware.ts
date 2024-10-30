@@ -1,4 +1,3 @@
-// middleware/authMiddleware.ts
 import { NextApiRequest, NextApiResponse } from 'next';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
