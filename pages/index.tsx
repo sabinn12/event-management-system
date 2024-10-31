@@ -1,12 +1,13 @@
-import type { NextPage } from 'next';
-import Head from 'next/head';
+import React from 'react';
+import Header from '../components/Header';
+import HomeComponent from '../components/home';
 
-const Home: NextPage = () => {
+const Home: React.FC = () => {
   return (
-    <div className="text-center">
-      <h2>Welcome to the Event Management System</h2>
-      <p>Find and book events quickly and easily.</p>
-      <button className="btn btn-primary mt-3">Explore Events</button>
+    <div>
+      <Header />
+      
+      <HomeComponent />
     </div>
   );
 };

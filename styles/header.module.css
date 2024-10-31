@@ -1,0 +1,41 @@
+
+
+.headerWrapper {
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbarCustom {
+  background-color: #ffffff;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  padding: 1rem 2rem;
+}
+
+.brandName {
+  color: #00bfa6;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.navLink {
+  color: #333333 !important;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  transition: all 0.3s ease;
+  border-radius: 5px;
+}
+
+.navLink:hover {
+  background-color: #00bfa6;
+  color: #0056b3 !important;
+
+}
+
+.activeLink {
+  background-color: #00bfa6;
+  color: #ffffff !important;
+  font-weight: 1000;
+}
+

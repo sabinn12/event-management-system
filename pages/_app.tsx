@@ -1,11 +1,13 @@
-import Layout from '../components/layout';
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
+import Header from '../components/Header'; // Import your header
+import Home from '../components/home';
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <Layout> {/* This wraps the header, footer, and page content only once */}
-      <Component {...pageProps} />
-    </Layout>
+    <>
+      <Header />  {/* Header with navigation */}
+      <Home />
+    </>
   );
 }
