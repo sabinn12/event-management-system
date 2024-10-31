@@ -14,7 +14,7 @@
 }
 
 .brandName {
-  color: #00bfa6;
+  color:  #0056b3;
   font-weight: bold;
   font-size: 1.5rem;
 }
@@ -34,7 +34,7 @@
 }
 
 .activeLink {
-  background-color: #00bfa6;
+  background-color:  #0056b3;
   color: #ffffff !important;
   font-weight: 1000;
 }
