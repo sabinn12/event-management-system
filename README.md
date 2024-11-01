@@ -44,8 +44,8 @@ Follow the steps below to set up and run the project locally.
 3. **Create a .env file**:
    ```bash
    DATABASE_URL=your-database-connection-string
-  JWT_SECRET=your-jwt-secret
-
+   JWT_SECRET=your-jwt-secret
+   ```
 4.  **generate prisma client**:
     ```bash
     npx prisma generate
