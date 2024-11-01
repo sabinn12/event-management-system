@@ -88,8 +88,8 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <section className={`container-fluid ${styles.homeSection}`}>
-        <div className="row align-items-center shadow-lg">
+      <section  className={`container-fluid ${styles.homeSection}`}>
+        <div id ="home-section" className="row align-items-center shadow-lg">
           <div className="col-md-6">
             <div className={styles.textContent}>
               <h1 className={styles.title}>Welcome to Event Management System</h1>
@@ -114,7 +114,7 @@ const Home: React.FC = () => {
         </div>
 
         <section id="view-events" className={`container ${styles.viewEventsSection}`}>
-          <h2 className="text-center mb-4">Upcoming Events</h2>
+          <h2 className="text-center mb-4" style={{color:'#007bff', fontWeight:'bold', fontSize:'40px'}}>Upcoming Events</h2>
           <div className="row shadow-sm p-3 mb-5 bg-white rounded">
             {events.map((event) => (
               <div className="col-md-4 mb-4" key={event.id}>

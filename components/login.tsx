@@ -39,7 +39,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className={`d-flex align-items-center justify-content-center ${styles.loginWrapper}`}>
+    <div id="login-section" className={`d-flex align-items-center justify-content-center ${styles.loginWrapper}`}>
       <div className={`card ${styles.card}`}>
         <h2 className="text-center mb-4">Login</h2>
         <form onSubmit={handleSubmit}>
