@@ -169,6 +169,38 @@ const AdminPage: React.FC = () => {
     }
   };
 
+  const handleDeleteEvent = async (eventId: number) => {
+    try {
+      const token = sessionStorage.getItem('token');
+      if (!token) {
+        alert('No token provided. Please log in again.');
+        router.push('/');
+        return;
+      }
+
+      const response = await fetch(`/api/events/delete-event`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ eventId }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        alert(`Error: ${errorData.message}`);
+        return;
+      }
+
+      alert('Event deleted successfully!');
+      setEvents((prevEvents) => prevEvents.filter((event) => event.id !== eventId));
+    } catch (error) {
+      console.error('Error deleting event:', error);
+      alert('Error deleting event. Please try again.');
+    }
+  };
+
   return (
     <div className="container py-5">
       <h1 className="mb-4 text-dark">Welcome Admin</h1>
@@ -204,7 +236,12 @@ const AdminPage: React.FC = () => {
                   >
                     Edit
                   </button>
-                  <button className="btn btn-danger btn-sm">Delete</button>
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleDeleteEvent(event.id)}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
@@ -218,6 +255,7 @@ const AdminPage: React.FC = () => {
         </button>
       </div>
 
+      {/* Add Modal */}
       <div
         className={`modal fade ${showAddModal ? 'show d-block' : ''}`}
         style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
@@ -250,14 +288,14 @@ const AdminPage: React.FC = () => {
               </form>
             </div>
             <div className="modal-footer">
-              <button className="btn btn-primary" onClick={handleAddEvent}>
-                Add
-              </button>
+              <button className="btn btn-secondary" onClick={handleCloseAddModal}>Close</button>
+              <button className="btn btn-success" onClick={handleAddEvent}>Add Event</button>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Edit Modal */}
       <div
         className={`modal fade ${showEditModal ? 'show d-block' : ''}`}
         style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
@@ -290,9 +328,8 @@ const AdminPage: React.FC = () => {
               </form>
             </div>
             <div className="modal-footer">
-              <button className="btn btn-primary" onClick={handleEditEvent}>
-                Save Changes
-              </button>
+              <button className="btn btn-secondary" onClick={handleCloseEditModal}>Close</button>
+              <button className="btn btn-primary" onClick={handleEditEvent}>Save Changes</button>
             </div>
           </div>
         </div>
