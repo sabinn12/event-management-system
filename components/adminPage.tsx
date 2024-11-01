@@ -21,8 +21,8 @@ const AdminPage: React.FC = () => {
     date: '',
     seats: 0,
   });
+  const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
 
-  // Fetch events from the backend
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -56,20 +56,30 @@ const AdminPage: React.FC = () => {
     fetchEvents();
   }, [router]);
 
-  // Functions to toggle modals
   const handleShowAddModal = () => setShowAddModal(true);
   const handleCloseAddModal = () => setShowAddModal(false);
 
-  const handleShowEditModal = () => setShowEditModal(true);
-  const handleCloseEditModal = () => setShowEditModal(false);
+  const handleShowEditModal = (event: Event) => {
+    setNewEvent({
+      title: event.title,
+      description: event.description,
+      date: event.date.slice(0, 10),
+      seats: event.seats,
+    });
+    setSelectedEventId(event.id);
+    setShowEditModal(true);
+  };
 
-  // Handle logout and redirect
+  const handleCloseEditModal = () => {
+    setShowEditModal(false);
+    setSelectedEventId(null);
+  };
+
   const handleLogout = () => {
     sessionStorage.removeItem('token');
     router.push('/');
   };
 
-  // Handle input changes for the Add Event form
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target;
     setNewEvent((prev) => ({
@@ -78,13 +88,12 @@ const AdminPage: React.FC = () => {
     }));
   };
 
-  // Handle adding a new event
   const handleAddEvent = async () => {
     try {
       const token = sessionStorage.getItem('token');
       if (!token) {
         alert('No token provided. Please log in again.');
-        router.push('/'); // Redirect to login page
+        router.push('/');
         return;
       }
 
@@ -110,6 +119,53 @@ const AdminPage: React.FC = () => {
     } catch (error) {
       console.error('Error creating event:', error);
       alert('Error creating event. Please try again.');
+    }
+  };
+
+  const handleEditEvent = async () => {
+    if (selectedEventId === null) return;
+
+    try {
+      const token = sessionStorage.getItem('token');
+      if (!token) {
+        alert('No token provided. Please log in again.');
+        router.push('/');
+        return;
+      }
+
+      const response = await fetch(`/api/events/update-event`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          eventId: selectedEventId,
+          title: newEvent.title,
+          description: newEvent.description,
+          date: newEvent.date,
+          seats: newEvent.seats,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        alert(`Error: ${errorData.message}`);
+        return;
+      }
+
+      const data = await response.json();
+      alert('Event updated successfully!');
+
+      setEvents((prevEvents) =>
+        prevEvents.map((event) =>
+          event.id === selectedEventId ? data.event : event
+        )
+      );
+      handleCloseEditModal();
+    } catch (error) {
+      console.error('Error updating event:', error);
+      alert('Error updating event. Please try again.');
     }
   };
 
@@ -139,12 +195,12 @@ const AdminPage: React.FC = () => {
               <tr key={event.id}>
                 <td>{event.title}</td>
                 <td>{event.description}</td>
-                <td>{event.date.slice(0, 10)}</td> {/* Format date to YYYY-MM-DD */}
+                <td>{event.date.slice(0, 10)}</td>
                 <td>{event.seats}</td>
                 <td>
                   <button
                     className="btn btn-primary btn-sm me-2"
-                    onClick={handleShowEditModal}
+                    onClick={() => handleShowEditModal(event)}
                   >
                     Edit
                   </button>
@@ -156,14 +212,12 @@ const AdminPage: React.FC = () => {
         </table>
       </div>
 
-      {/* Logout Button */}
       <div className="d-flex justify-content-center mt-4">
         <button className="btn btn-danger" onClick={handleLogout}>
           Logout
         </button>
       </div>
 
-      {/* Add Event Modal */}
       <div
         className={`modal fade ${showAddModal ? 'show d-block' : ''}`}
         style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
@@ -179,42 +233,19 @@ const AdminPage: React.FC = () => {
               <form>
                 <div className="mb-3">
                   <label htmlFor="title" className="form-label">Title</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="title"
-                    value={newEvent.title}
-                    onChange={handleInputChange}
-                  />
+                  <input type="text" className="form-control" id="title" value={newEvent.title} onChange={handleInputChange} />
                 </div>
                 <div className="mb-3">
                   <label htmlFor="description" className="form-label">Description</label>
-                  <textarea
-                    className="form-control"
-                    id="description"
-                    value={newEvent.description}
-                    onChange={handleInputChange}
-                  ></textarea>
+                  <textarea className="form-control" id="description" value={newEvent.description} onChange={handleInputChange}></textarea>
                 </div>
                 <div className="mb-3">
                   <label htmlFor="date" className="form-label">Date</label>
-                  <input
-                    type="date"
-                    className="form-control"
-                    id="date"
-                    value={newEvent.date}
-                    onChange={handleInputChange}
-                  />
+                  <input type="date" className="form-control" id="date" value={newEvent.date} onChange={handleInputChange} />
                 </div>
                 <div className="mb-3">
                   <label htmlFor="seats" className="form-label">Seats</label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    id="seats"
-                    value={newEvent.seats}
-                    onChange={handleInputChange}
-                  />
+                  <input type="number" className="form-control" id="seats" value={newEvent.seats} onChange={handleInputChange} />
                 </div>
               </form>
             </div>
@@ -227,7 +258,6 @@ const AdminPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Edit Event Modal */}
       <div
         className={`modal fade ${showEditModal ? 'show d-block' : ''}`}
         style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
@@ -242,25 +272,25 @@ const AdminPage: React.FC = () => {
             <div className="modal-body">
               <form>
                 <div className="mb-3">
-                  <label htmlFor="titleEdit" className="form-label">Title</label>
-                  <input type="text" className="form-control" id="titleEdit" />
+                  <label htmlFor="title" className="form-label">Title</label>
+                  <input type="text" className="form-control" id="title" value={newEvent.title} onChange={handleInputChange} />
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="descriptionEdit" className="form-label">Description</label>
-                  <textarea className="form-control" id="descriptionEdit"></textarea>
+                  <label htmlFor="description" className="form-label">Description</label>
+                  <textarea className="form-control" id="description" value={newEvent.description} onChange={handleInputChange}></textarea>
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="dateEdit" className="form-label">Date</label>
-                  <input type="date" className="form-control" id="dateEdit" />
+                  <label htmlFor="date" className="form-label">Date</label>
+                  <input type="date" className="form-control" id="date" value={newEvent.date} onChange={handleInputChange} />
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="seatsEdit" className="form-label">Seats</label>
-                  <input type="number" className="form-control" id="seatsEdit" />
+                  <label htmlFor="seats" className="form-label">Seats</label>
+                  <input type="number" className="form-control" id="seats" value={newEvent.seats} onChange={handleInputChange} />
                 </div>
               </form>
             </div>
             <div className="modal-footer">
-              <button className="btn btn-primary" onClick={handleCloseEditModal}>
+              <button className="btn btn-primary" onClick={handleEditEvent}>
                 Save Changes
               </button>
             </div>
