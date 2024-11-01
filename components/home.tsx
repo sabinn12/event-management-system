@@ -17,7 +17,7 @@ const Home: React.FC = () => {
   return (
     <>
       <section className={`container-fluid ${styles.homeSection}`}>
-        <div className="row align-items-center">
+        <div className="row align-items-center shadow-lg">
           {/* Text Content */}
           <div className="col-md-6">
             <div className={styles.textContent}>
@@ -44,9 +44,10 @@ const Home: React.FC = () => {
         </div>
 
         {/* View Events Section */}
-        <section id="view-events" className={`container ${styles.viewEventsSection}`}>
+        <section id="view-events" className={`container ${styles.viewEventsSection} `}>
+
           <h2 className="text-center mb-4">Upcoming Events</h2>
-          <div className="row">
+          <div className="row shadow-sm p-3 mb-5 bg-white rounded">
             {/* Event Card 1 */}
             <div className="col-md-4 mb-4">
               <div className="card h-100">
@@ -156,6 +157,10 @@ const Home: React.FC = () => {
           </div>
         </div>
       )}
+      {/* Footer */}
+      <footer className="text-center mt-5 py-4" style={{ backgroundColor: 'black' }}>
+        <p style={{color : 'white'}}>© 2024 Event Management System. All Rights Reserved.</p>
+      </footer>
     </>
   );
 };

@@ -41,6 +41,7 @@ const Header: React.FC = () => {
                   Home
                 </Link>
               </li>
+              
               <li className="nav-item">
                 <Link
                   href="/events"
