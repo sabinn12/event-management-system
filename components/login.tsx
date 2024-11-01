@@ -1,14 +1,41 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import styles from '../styles/Login.module.css';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState(''); // State to store error messages
+  const router = useRouter();
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    console.log("Username:", username);
-    console.log("Password:", password);
+
+    try {
+      // Make a POST request to your login API
+      const response = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Save the token to session storage
+        sessionStorage.setItem('token', data.token);
+
+        // Redirect to the admin page
+        router.push('/admin');
+      } else {
+        // Display an error message
+        setErrorMessage(data.message || 'Login failed');
+      }
+    } catch (error) {
+      setErrorMessage('An error occurred. Please try again.');
+    }
   };
 
   return (
@@ -16,6 +43,7 @@ const Login: React.FC = () => {
       <div className={`card ${styles.card}`}>
         <h2 className="text-center mb-4">Login</h2>
         <form onSubmit={handleSubmit}>
+          {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
           <div className="form-group mb-3">
             <label htmlFor="username">Username</label>
             <input
