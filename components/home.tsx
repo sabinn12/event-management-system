@@ -32,7 +32,7 @@ const Home: React.FC = () => {
         const data = await response.json();
         setEvents(data.events);
       } catch (error) {
-        console.error('Error etching events:', error);
+        console.error('Error fetching events:', error);
       }
     };
 
